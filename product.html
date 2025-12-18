@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج - المتجر الرقمي</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="store-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- نفس الهيدر من index.html -->
+    
+    <main class="main-content">
+        <section class="product-detail">
+            <div class="container">
+                <div class="product-detail-content" id="product-detail">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- نفس الفوتر من index.html -->
+    
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script>
+        async function loadProductDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (!productId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            try {
+                const { data: product, error } = await supabase
+                    .from('digital_products')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+                
+                if (error || !product) throw error;
+                
+                displayProductDetail(product);
+                
+            } catch (error) {
+                console.error('Error loading product:', error);
+                showError('المنتج غير موجود');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+            }
+        }
+        
+        function displayProductDetail(product) {
+            const container = document.getElementById('product-detail');
+            
+            container.innerHTML = `
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <img src="${product.preview_image_url || 'assets/images/placeholder.jpg'}" 
+                             alt="${product.name}"
+                             id="main-product-image">
+                    </div>
+                </div>
+                <div class="product-detail-info">
+                    <div class="product-detail-header">
+                        <span class="product-detail-category">${product.category || 'عام'}</span>
+                        <h1 class="product-detail-name">${product.name}</h1>
+                        <div class="product-detail-price">$${product.price.toFixed(2)}</div>
+                    </div>
+                    
+                    <div class="product-detail-description">
+                        <h3>الوصف</h3>
+                        <p>${product.description || 'لا يوجد وصف للمنتج'}</p>
+                    </div>
+                    
+                    <div class="product-detail-features">
+                        <h3>المميزات</h3>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>تنزيل فوري بعد الدفع</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>دعم فني متواصل</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>تحديثات مجانية</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-detail-actions">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn" id="decrease-qty">-</button>
+                            <input type="number" class="quantity-input" id="product-quantity" value="1" min="1">
+                            <button class="quantity-btn" id="increase-qty">+</button>
+                        </div>
+                        <button class="btn btn-primary btn-lg" onclick="addToCartDetail('${product.id}')">
+                            <i class="fas fa-cart-plus"></i> أضف إلى السلة
+                        </button>
+                        <button class="btn btn-success btn-lg" onclick="buyNow('${product.id}')">
+                            <i class="fas fa-bolt"></i> اشترِ الآن
+                        </button>
+                    </div>
+                    
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-download"></i>
+                            <span>${product.download_count || 0} تنزيل</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>${new Date(product.created_at).toLocaleDateString('ar-SA')}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-sync"></i>
+                            <span>آخر تحديث: ${new Date(product.updated_at).toLocaleDateString('ar-SA')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            setupProductDetailEvents();
+        }
+        
+        function setupProductDetailEvents() {
+            const quantityInput = document.getElementById('product-quantity');
+            const decreaseBtn = document.getElementById('decrease-qty');
+            const increaseBtn = document.getElementById('increase-qty');
+            
+            decreaseBtn.addEventListener('click', () => {
+                const current = parseInt(quantityInput.value);
+                if (current > 1) {
+                    quantityInput.value = current - 1;
+                }
+            });
+            
+            increaseBtn.addEventListener('click', () => {
+                const current = parseInt(quantityInput.value);
+                quantityInput.value = current + 1;
+            });
+            
+            quantityInput.addEventListener('change', () => {
+                if (quantityInput.value < 1) {
+                    quantityInput.value = 1;
+                }
+            });
+        }
+        
+        async function addToCartDetail(productId) {
+            const quantity = parseInt(document.getElementById('product-quantity').value);
+            const success = await cartManager.addItem(productId, quantity);
+            
+            if (success) {
+                showSuccess('تمت إضافة المنتج إلى السلة');
+            }
+        }
+        
+        async function buyNow(productId) {
+            const quantity = parseInt(document.getElementById('product-quantity').value);
+            const success = await cartManager.addItem(productId, quantity);
+            
+            if (success) {
+                cartManager.checkout();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductDetail();
+        });
+    </script>
+</body>
+</html>

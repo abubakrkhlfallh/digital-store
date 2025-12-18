@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المسؤول - المتجر الرقمي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #333;
+            direction: rtl;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            padding: 20px 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 5px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-right: 4px solid transparent;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-right-color: var(--success);
+        }
+
+        .nav-links i {
+            margin-left: 15px;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-size: 0.95rem;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            transition: all 0.3s;
+        }
+
+        .header {
+            height: var(--header-height);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* المحتوى */
+        .content {
+            padding: 30px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .card-1 .card-icon { background: linear-gradient(45deg, #f72585, #b5179e); }
+        .card-2 .card-icon { background: linear-gradient(45deg, #4361ee, #3a0ca3); }
+        .card-3 .card-icon { background: linear-gradient(45deg, #4cc9f0, #4895ef); }
+        .card-4 .card-icon { background: linear-gradient(45deg, #f8961e, #f3722c); }
+
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* الجداول */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            color: var(--dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* النماذج */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* قسم الإعدادات */
+        .settings-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-card h4 {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            color: var(--dark);
+        }
+
+        /* صفحة تسجيل الدخول */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* الاستجابة */
+        @media (max-width: 992px) {
+            .sidebar {
+                right: -100%;
+            }
+            
+            .sidebar.active {
+                right: 0;
+            }
+            
+            .main-content {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 0 15px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- صفحة تسجيل الدخول -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>تسجيل دخول المسؤول</h2>
+                <p>أدخل بيانات الدخول للوصول إلى لوحة التحكم</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="admin@digitalstore.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="********" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+            </form>
+            <div class="alert alert-danger mt-3" id="login-error" style="display: none; background: #f8d7da; color: #721c24; padding: 10px; border-radius: 8px;">
+                <i class="fas fa-exclamation-circle"></i> <span id="error-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم (مخفي في البداية) -->
+    <div id="admin-dashboard" class="admin-container" style="display: none;">
+        <!-- الشريط الجانبي -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>المتجر الرقمي</h2>
+                <p>لوحة تحكم المسؤول</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-chart-line"></i> <span class="nav-text">لوحة التحكم</span></a></li>
+                <li><a href="#" data-section="customers"><i class="fas fa-users"></i> <span class="nav-text">العملاء</span></a></li>
+                <li><a href="#" data-section="orders"><i class="fas fa-shopping-cart"></i> <span class="nav-text">الطلبات</span></a></li>
+                <li><a href="#" data-section="reports"><i class="fas fa-chart-pie"></i> <span class="nav-text">التقارير</span></a></li>
+                <li><a href="#" data-section="products"><i class="fas fa-box"></i> <span class="nav-text">المنتجات</span></a></li>
+                <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">الإعدادات</span></a></li>
+                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> <span class="nav-text">تسجيل الخروج</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <!-- الرأس -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-sidebar"><i class="fas fa-bars"></i></button>
+                    <h3 id="current-section">لوحة التحكم</h3>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <div class="admin-avatar" id="admin-avatar">م</div>
+                        <div>
+                            <h4 id="admin-name">المسؤول</h4>
+                            <p id="admin-email">admin@digitalstore.com</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- المحتوى -->
+            <div class="content">
+                <!-- قسم لوحة التحكم -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="dashboard-cards">
+                        <div class="card card-1">
+                            <div class="card-icon"><i class="fas fa-users"></i></div>
+                            <h3 id="total-customers">0</h3>
+                            <p>إجمالي العملاء</p>
+                        </div>
+                        <div class="card card-2">
+                            <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <h3 id="total-orders">0</h3>
+                            <p>إجمالي الطلبات</p>
+                        </div>
+                        <div class="card card-3">
+                            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                            <h3 id="total-revenue">$0</h3>
+                            <p>إجمالي الإيرادات</p>
+                        </div>
+                        <div class="card card-4">
+                            <div class="card-icon"><i class="fas fa-box"></i></div>
+                            <h3 id="total-products">0</h3>
+                            <p>إجمالي المنتجات</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>آخر الطلبات</h3>
+                            <a href="#" data-section="orders" class="btn btn-primary">عرض الكل</a>
+                        </div>
+                        <table id="recent-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>العميل</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- قسم العملاء -->
+                <div id="customers-section" class="section-content" style="display: none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>إدارة العملاء</h3>
+                            <button class="btn btn-primary" id="add-customer-btn">إضافة عميل</button>
+                        </div>
+                        <table id="customers-table">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الهاتف</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- قسم الطلبات -->
+                <div id="orders-section" class="section-content" style="display: none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>إدارة الطلبات</h3>
+                            <div>
+                                <select id="order-filter" class="form-control" style="width: auto; display: inline-block; margin-left: 10px;">
+                                    <option value="all">جميع الطلبات</option>
+                                    <option value="pending">قيد الانتظار</option>
+                                    <option value="processing">قيد المعالجة</option>
+                                    <option value="completed">مكتمل</option>
+                                    <option value="cancelled">ملغي</option>
+                                </select>
+                            </div>
+                        </div>
+                        <table id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>العميل</th>
+                                    <th>المبلغ</th>
+                                    <th>حالة الدفع</th>
+                                    <th>حالة الطلب</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- قسم التقارير -->
+                <div id="reports-section" class="section-content" style="display: none;">
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-icon" style="background: linear-gradient(45deg, #4361ee, #3a0ca3);">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3 id="today-revenue">$0</h3>
+                            <p>مبيعات اليوم</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon" style="background: linear-gradient(45deg, #4cc9f0, #4895ef);">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3 id="month-revenue">$0</h3>
+                            <p>مبيعات الشهر</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon" style="background: linear-gradient(45deg, #f8961e, #f3722c);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 id="avg-order-value">$0</h3>
+                            <p>متوسط قيمة الطلب</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon" style="background: linear-gradient(45deg, #7209b7, #560bad);">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <h3 id="top-product-count">0</h3>
+                            <p>المنتج الأكثر مبيعاً</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>تقرير المبيعات الشهري</h3>
+                            <select id="report-month" class="form-control" style="width: auto; display: inline-block;">
+                                <option value="1">يناير</option>
+                                <option value="2">فبراير</option>
+                                <option value="3">مارس</option>
+                                <option value="4">أبريل</option>
+                                <option value="5">مايو</option>
+                                <option value="6">يونيو</option>
+                                <option value="7">يوليو</option>
+                                <option value="8">أغسطس</option>
+                                <option value="9">سبتمبر</option>
+                                <option value="10">أكتوبر</option>
+                                <option value="11">نوفمبر</option>
+                                <option value="12">ديسمبر</option>
+                            </select>
+                        </div>
+                        <canvas id="sales-chart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <!-- قسم المنتجات -->
+                <div id="products-section" class="section-content" style="display: none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>إدارة المنتجات الرقمية</h3>
+                            <button class="btn btn-primary" id="add-product-btn">إضافة منتج</button>
+                        </div>
+                        <table id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>اسم المنتج</th>
+                                    <th>السعر</th>
+                                    <th>الفئة</th>
+                                    <th>عدد التنزيلات</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- قسم الإعدادات -->
+                <div id="settings-section" class="section-content" style="display: none;">
+                    <div class="settings-container">
+                        <div class="settings-card">
+                            <h4><i class="fas fa-user-cog"></i> الملف الشخصي</h4>
+                            <form id="profile-form">
+                                <div class="form-group">
+                                    <label>الاسم الكامل</label>
+                                    <input type="text" id="profile-name" class="form-control" value="المسؤول الرئيسي">
+                                </div>
+                                <div class="form-group">
+                                    <label>البريد الإلكتروني</label>
+                                    <input type="email" id="profile-email" class="form-control" value="admin@digitalstore.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>رقم الهاتف</label>
+                                    <input type="tel" id="profile-phone" class="form-control" value="+966500000000">
+                                </div>
+                                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h4><i class="fas fa-lock"></i> تغيير كلمة المرور</h4>
+                            <form id="password-form">
+                                <div class="form-group">
+                                    <label>كلمة المرور الحالية</label>
+                                    <input type="password" id="current-password" class="form-control" placeholder="أدخل كلمة المرور الحالية">
+                                </div>
+                                <div class="form-group">
+                                    <label>كلمة المرور الجديدة</label>
+                                    <input type="password" id="new-password" class="form-control" placeholder="أدخل كلمة المرور الجديدة">
+                                </div>
+                                <div class="form-group">
+                                    <label>تأكيد كلمة المرور الجديدة</label>
+                                    <input type="password" id="confirm-password" class="form-control" placeholder="أكد كلمة المرور الجديدة">
+                                </div>
+                                <button type="submit" class="btn btn-primary">تغيير كلمة المرور</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h4><i class="fas fa-store"></i> إعدادات المتجر</h4>
+                            <form id="store-settings-form">
+                                <div class="form-group">
+                                    <label>اسم المتجر</label>
+                                    <input type="text" id="store-name" class="form-control" value="المتجر الرقمي">
+                                </div>
+                                <div class="form-group">
+                                    <label>عملة المتجر</label>
+                                    <select id="store-currency" class="form-control">
+                                        <option value="USD">دولار أمريكي ($)</option>
+                                        <option value="SAR">ريال سعودي (ر.س)</option>
+                                        <option value="EUR">يورو (€)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>ضريبة القيمة المضافة %</label>
+                                    <input type="number" id="store-tax" class="form-control" value="15" min="0" max="100" step="0.1">
+                                </div>
+                                <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h4><i class="fas fa-credit-card"></i> إعدادات الدفع</h4>
+                            <form id="payment-settings-form">
+                                <div class="form-group">
+                                    <label>معرف عميل PayPal</label>
+                                    <input type="text" id="paypal-client-id" class="form-control" placeholder="أدخل معرف العميل الخاص بـ PayPal">
+                                </div>
+                                <div class="form-group">
+                                    <label>وضع PayPal</label>
+                                    <select id="paypal-mode" class="form-control">
+                                        <option value="sandbox">وضع التجربة (Sandbox)</option>
+                                        <option value="live">وضع الإنتاج (Live)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="enable-paypal" class="form-check-input">
+                                        <label class="form-check-label" for="enable-paypal">تفعيل PayPal</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">حفظ إعدادات الدفع</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- نموذج إضافة منتج -->
+    <div id="product-modal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">إضافة منتج جديد</h3>
+            <form id="product-form">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="product-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>وصف المنتج</label>
+                    <textarea id="product-description" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>السعر ($)</label>
+                    <input type="number" id="product-price" class="form-control" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>الفئة</label>
+                    <select id="product-category" class="form-control">
+                        <option value="برمجيات">برمجيات</option>
+                        <option value="قوالب">قوالب</option>
+                        <option value="دورات">دورات</option>
+                        <option value="كتب">كتب</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رابط الملف الرقمي</label>
+                    <input type="url" id="product-file-url" class="form-control" placeholder="https://example.com/file.zip">
+                </div>
+                <div class="form-group">
+                    <label>رابط الصورة</label>
+                    <input type="url" id="product-image-url" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label>الكمية المتاحة (-1 تعني غير محدود)</label>
+                    <input type="number" id="product-stock" class="form-control" value="-1" min="-1">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">حفظ المنتج</button>
+                    <button type="button" class="btn btn-danger" id="close-product-modal">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة عميل -->
+    <div id="customer-modal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">إضافة عميل جديد</h3>
+            <form id="customer-form">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="customer-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="customer-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="customer-password" class="form-control" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="customer-phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>البلد</label>
+                    <input type="text" id="customer-country" class="form-control">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">إضافة العميل</button>
+                    <button type="button" class="btn btn-danger" id="close-customer-modal">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

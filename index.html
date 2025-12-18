@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر الرقمي - منتجات رقمية مميزة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="store-styles.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-store"></i>
+                    <span>المتجر الرقمي</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="#home" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="#products"><i class="fas fa-box"></i> المنتجات</a></li>
+                    <li><a href="#categories"><i class="fas fa-list"></i> الفئات</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> عن المتجر</a></li>
+                    <li><a href="#contact"><i class="fas fa-phone"></i> اتصل بنا</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-actions">
+                <!-- سلة التسوق -->
+                <div class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-header">
+                            <h4>سلة التسوق</h4>
+                            <button class="close-cart"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="cart-items" id="cart-items">
+                            <!-- المنتجات في السلة -->
+                        </div>
+                        <div class="cart-footer">
+                            <div class="cart-total">
+                                <span>المجموع:</span>
+                                <span class="total-price" id="cart-total">$0.00</span>
+                            </div>
+                            <button class="btn btn-primary" id="checkout-btn">إتمام الشراء</button>
+                            <a href="cart.html" class="btn btn-secondary">عرض السلة</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- أيقونة المستخدم -->
+                <div class="user-menu" id="user-menu">
+                    <i class="fas fa-user-circle"></i>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <div>
+                                <h4 id="user-name">زائر</h4>
+                                <p id="user-email">قم بتسجيل الدخول</p>
+                            </div>
+                        </div>
+                        <ul class="user-links">
+                            <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
+                            <li><a href="register.html"><i class="fas fa-user-plus"></i> إنشاء حساب</a></li>
+                            <li><a href="profile.html" id="profile-link"><i class="fas fa-user"></i> الملف الشخصي</a></li>
+                            <li><a href="orders.html" id="orders-link"><i class="fas fa-shopping-bag"></i> طلباتي</a></li>
+                            <li><a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- زر القائمة للموبايل -->
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- محتوى الصفحة الرئيسية -->
+    <main class="main-content">
+        <!-- قسم الهيرو -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>المتجر الرقمي الأول للبرمجيات والمنتجات الرقمية</h1>
+                    <p>اكتشف مجموعة واسعة من المنتجات الرقمية عالية الجودة بأسعار تنافسية</p>
+                    <div class="hero-buttons">
+                        <a href="#products" class="btn btn-primary btn-lg">تصفح المنتجات</a>
+                        <a href="#categories" class="btn btn-secondary btn-lg">استعرض الفئات</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="assets/images/digital-products.svg" alt="منتجات رقمية">
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الفئات -->
+        <section id="categories" class="categories-section">
+            <div class="container">
+                <h2 class="section-title">الفئات</h2>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon" style="background: linear-gradient(45deg, #f72585, #b5179e);">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>برمجيات</h3>
+                        <p>برامج وتطبيقات متنوعة</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon" style="background: linear-gradient(45deg, #4361ee, #3a0ca3);">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3>قوالب</h3>
+                        <p>تصاميم وقوالب جاهزة</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon" style="background: linear-gradient(45deg, #4cc9f0, #4895ef);">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>دورات</h3>
+                        <p>دورات تعليمية احترافية</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon" style="background: linear-gradient(45deg, #f8961e, #f3722c);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>كتب إلكترونية</h3>
+                        <p>كتب رقمية في مختلف المجالات</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المنتجات -->
+        <section id="products" class="products-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">المنتجات المميزة</h2>
+                    <div class="section-filters">
+                        <select id="category-filter" class="form-control">
+                            <option value="all">جميع الفئات</option>
+                            <option value="برمجيات">برمجيات</option>
+                            <option value="قوالب">قوالب</option>
+                            <option value="دورات">دورات</option>
+                            <option value="كتب">كتب</option>
+                        </select>
+                        <select id="sort-by" class="form-control">
+                            <option value="newest">الأحدث أولاً</option>
+                            <option value="price-low">الأقل سعراً</option>
+                            <option value="price-high">الأعلى سعراً</option>
+                            <option value="popular">الأكثر شيوعاً</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="products-grid" id="products-container">
+                    <!-- سيتم ملؤها بالمنتجات -->
+                </div>
+                
+                <div class="load-more">
+                    <button id="load-more-btn" class="btn btn-primary">تحميل المزيد</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم عن المتجر -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">عن متجرنا</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>المتجر الرقمي الأول في الوطن العربي</h3>
+                        <p>نقدم لكم أفضل المنتجات الرقمية التي تساعدكم في تطوير مهاراتكم وتحقيق أهدافكم. نحن نؤمن بأن المعرفة يجب أن تكون متاحة للجميع.</p>
+                        <div class="features">
+                            <div class="feature">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>آمن 100%</h4>
+                                <p>معاملات آمنة وبيانات محمية</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-download"></i>
+                                <h4>تنزيل فوري</h4>
+                                <p>احصل على المنتج فور الدفع</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-headset"></i>
+                                <h4>دعم فني</h4>
+                                <p>دعم فني متواصل 24/7</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="assets/images/about-us.svg" alt="عن المتجر">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم اتصل بنا -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <h2 class="section-title">اتصل بنا</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>الهاتف</h4>
+                                <p>+249 11 3323369</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>البريد الإلكتروني</h4>
+                                <p>abubakrkhlfall@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>ساعات العمل</h4>
+                                <p>24/7</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-form">
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <input type="text" placeholder="الاسم الكامل" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" placeholder="البريد الإلكتروني" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea placeholder="رسالتك" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>المتجر الرقمي</h3>
+                    <p>منصة رائدة في بيع المنتجات الرقمية بجودة عالية وأسعار مناسبة.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61583893095780"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/html_8888?igsh=OGQ5ZDc2ODk2ZA=="><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#products">المنتجات</a></li>
+                        <li><a href="#categories">الفئات</a></li>
+                        <li><a href="#about">عن المتجر</a></li>
+                        <li><a href="#contact">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>المساعدة</h3>
+                    <ul>
+                        <li><a href="faq.html">الأسئلة الشائعة</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="refund.html">سياسة الإرجاع</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>اشترك في النشرة البريدية</h3>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="بريدك الإلكتروني" required>
+                        <button type="submit" class="btn btn-primary">اشتراك</button>
+                    </form>
+                    <p>اشترك لتحصل على آخر العروض والتحديثات.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 المتجر الرقمي. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- نموذج تسجيل الدخول -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تسجيل الدخول</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+                </form>
+                <p class="text-center">ليس لديك حساب؟ <a href="#" id="show-register">إنشاء حساب</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إنشاء حساب -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء حساب جديد</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> الاسم الكامل</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> رقم الهاتف</label>
+                        <input type="tel" id="register-phone">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                        <input type="password" id="register-password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> تأكيد كلمة المرور</label>
+                        <input type="password" id="register-confirm" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="agree-terms" required>
+                        <label for="agree-terms">أوافق على <a href="terms.html">الشروط والأحكام</a></label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">إنشاء الحساب</button>
+                </form>
+                <p class="text-center">لديك حساب بالفعل؟ <a href="#" id="show-login">تسجيل الدخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الدفع -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إتمام عملية الشراء</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-steps">
+                    <div class="step active">1. معلومات الدفع</div>
+                    <div class="step">2. تأكيد الطلب</div>
+                    <div class="step">3. اكتمال الطلب</div>
+                </div>
+                
+                <div id="payment-step">
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="paypal">
+                            <i class="fab fa-paypal"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="payment-method" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>بطاقة ائتمان</span>
+                        </div>
+                    </div>
+                    
+                    <div id="paypal-container" class="payment-container active">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                    
+                    <div id="card-container" class="payment-container">
+                        <form id="card-form">
+                            <div class="form-group">
+                                <label>رقم البطاقة</label>
+                                <input type="text" placeholder="1234 5678 9012 3456" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>تاريخ الانتهاء</label>
+                                    <input type="text" placeholder="MM/YY" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>رمز التحقق</label>
+                                    <input type="text" placeholder="123" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">دفع</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script src="payment.js"></script>
+    <script src="app.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A new web page">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="favicon.ico">
+    <title>Document</title>
+    <style>
+        /* Minimal CSS Reset */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, sans-serif; background: #fafbfc; color: #222; min-height: 100vh; line-height: 1.6; }
+    </style>
+</head>
+<body>
+        <!-- Start building your page here -->
+
+</body>
+</html>
