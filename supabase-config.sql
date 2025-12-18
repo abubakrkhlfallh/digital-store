@@ -8,7 +8,7 @@ ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;
 -- إعداد التحقق من البريد الإلكتروني
 UPDATE auth.users
 SET email_confirmed_at = NOW()
-WHERE email = 'admin@digitalstore.com';
+WHERE email = 'abubakrkhlfallh@gmail.com';
 
 -- ============================================
 -- إنشاء وظائف مساعدة للمصادقة
